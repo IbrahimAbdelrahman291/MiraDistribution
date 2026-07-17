@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="MeraDistribution.Domain/MiraDistribution.Domain.csproj" />
+  <Project Path="MiraDistribution.API/MiraDistribution.API.csproj" />
+  <Project Path="MiraDistribution.Application/MiraDistribution.Application.csproj" />
+  <Project Path="MiraDistribution.Infrastructure/MiraDistribution.Infrastructure.csproj" />
+</Solution>
