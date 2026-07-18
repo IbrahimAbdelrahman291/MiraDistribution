@@ -28,7 +28,15 @@ namespace MiraDistribution.Infrastructure
                 options.Password.RequiredLength = 6;
                 options.User.RequireUniqueEmail = false;
             }).AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
-
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowFrontend", policy =>
+                {
+                    policy.AllowAnyOrigin()
+                          .AllowAnyHeader()
+                          .AllowAnyMethod();
+                });
+            });
             services.AddHttpContextAccessor();
 
             services.AddScoped<IIdentityService, IdentityService>();
