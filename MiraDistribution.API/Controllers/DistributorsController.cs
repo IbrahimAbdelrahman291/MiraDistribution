@@ -16,8 +16,9 @@ namespace MiraDistribution.API.Controllers
         public DistributorsController(IMediator mediator) => _mediator = mediator;
 
         [HttpGet]
-        public async Task<ActionResult<List<DistributorDto>>> GetAll()
-            => Ok(await _mediator.Send(new GetDistributorsQuery()));
+        public async Task<ActionResult<PaginatedList<DistributorDto>>> GetAll(
+            [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 20)
+            => Ok(await _mediator.Send(new GetDistributorsQuery(pageNumber, pageSize)));
 
         [HttpPut("{id:int}")]
         public async Task<IActionResult> Update(int id, UpdateDistributorRequest request)

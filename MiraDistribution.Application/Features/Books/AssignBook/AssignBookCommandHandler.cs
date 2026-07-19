@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using MiraDistribution.Application.Common.Exceptions;
 using MiraDistribution.Application.Common.Interfaces;
 using MiraDistribution.Domain.Entities;
+using MiraDistribution.Domain.Enums;
 using MiraDistribution.Domain.Exceptions;
 
 namespace MiraDistribution.Application.Features.Books.AssignBook
@@ -31,6 +32,9 @@ namespace MiraDistribution.Application.Features.Books.AssignBook
 
             if (!distributorExists)
                 throw new NotFoundException(nameof(Distributor), request.DistributorId);
+            
+            if (book.Status == BookStatus.FullyCollected)
+                throw new DomainException("الدفتر ده مكتمل بالفعل، مينفعش يتعين لموزع تاني.");
 
             book.AssignTo(request.DistributorId);
 

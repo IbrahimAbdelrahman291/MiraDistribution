@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using MiraDistribution.Application.Common.Exceptions;
 using MiraDistribution.Application.Common.Interfaces;
 using MiraDistribution.Domain.Entities;
+using MiraDistribution.Domain.Enums;
 using MiraDistribution.Domain.Exceptions;
 
 namespace MiraDistribution.Application.Features.Books.TransferBook
@@ -29,6 +30,9 @@ namespace MiraDistribution.Application.Features.Books.TransferBook
             if (book.DistributorId == request.NewDistributorId)
                 throw new DomainException("الدفتر أصلاً مع نفس الموزع ده.");
 
+            if (book.Status == BookStatus.FullyCollected)
+                throw new DomainException("الدفتر ده مكتمل بالفعل، مينفعش يتنقل لموزع تاني.");
+
             var newDistributorExists = await _context.Distributors
                 .AnyAsync(d => d.Id == request.NewDistributorId, cancellationToken);
 
@@ -42,6 +46,8 @@ namespace MiraDistribution.Application.Features.Books.TransferBook
 
             if (openHistory is not null)
                 openHistory.UnassignedAt = DateTime.UtcNow;
+
+            
 
             book.AssignTo(request.NewDistributorId);
 

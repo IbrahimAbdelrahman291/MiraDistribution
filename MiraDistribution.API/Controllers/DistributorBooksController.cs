@@ -15,6 +15,7 @@ public class DistributorBooksController : ControllerBase
     public DistributorBooksController(IMediator mediator) => _mediator = mediator;
 
     [HttpGet]
-    public async Task<ActionResult<List<BookDto>>> GetMyBooks()
-        => Ok(await _mediator.Send(new GetMyBooksQuery()));
+    public async Task<ActionResult<PaginatedList<BookDto>>> GetMyBooks(
+    [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 20)
+    => Ok(await _mediator.Send(new GetMyBooksQuery(pageNumber, pageSize)));
 }

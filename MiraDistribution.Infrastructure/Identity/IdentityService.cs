@@ -67,5 +67,23 @@ namespace MiraDistribution.Infrastructure.Identity
             var usersInRole = await _userManager.GetUsersInRoleAsync(role.ToString());
             return usersInRole.Count > 0;
         }
+        public async Task<List<(string UserId, string Phone, UserRole Role)>> GetAllUsersAsync()
+        {
+            var result = new List<(string, string, UserRole)>();
+            var users = _userManager.Users.ToList(); // جدول المستخدمين مش كبير عادةً، تحميله كامل مقبول هنا
+
+            foreach (var user in users)
+            {
+                var roles = await _userManager.GetRolesAsync(user);
+                var roleName = roles.FirstOrDefault();
+
+                if (roleName is not null && Enum.TryParse<UserRole>(roleName, out var role))
+                {
+                    result.Add((user.Id, user.PhoneNumber ?? user.UserName!, role));
+                }
+            }
+
+            return result;
+        }
     }
 }

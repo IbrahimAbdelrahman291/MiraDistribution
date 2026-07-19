@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MiraDistribution.Application.Features.Users.CreateUser;
+using MiraDistribution.Application.Features.Users.GetUsers;
 
 namespace MiraDistribution.API.Controllers
 {
@@ -19,5 +20,8 @@ namespace MiraDistribution.API.Controllers
             var result = await _mediator.Send(command);
             return Ok(result);
         }
+        [HttpGet]
+        public async Task<ActionResult<List<UserDto>>> GetAll()
+            => Ok(await _mediator.Send(new GetUsersQuery()));
     }
 }

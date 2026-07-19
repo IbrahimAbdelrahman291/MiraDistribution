@@ -18,6 +18,9 @@ namespace MiraDistribution.Application.Features.Books.ChangeBookStatus
             var book = await _context.Books.FindAsync(new object[] { request.BookId }, cancellationToken)
                 ?? throw new NotFoundException(nameof(Book), request.BookId);
 
+            if (book.Status == BookStatus.FullyCollected)
+                throw new DomainException("الدفتر ده وصل لحالة 'مكتمل' بالفعل، مينفعش تتغيّر حالته تاني.");
+
             if (request.NewStatus != BookStatus.NotAssigned && book.DistributorId is null)
                 throw new DomainException("مينفعش تغيّر حالة الدفتر ده وهو لسه مش متعين لأي موزع.");
 

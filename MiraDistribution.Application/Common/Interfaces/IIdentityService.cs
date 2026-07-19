@@ -12,5 +12,7 @@ namespace MiraDistribution.Application.Common.Interfaces
         Task<bool> CheckPasswordAsync(string userId, string password);
         Task<UserRole?> GetUserRoleAsync(string userId);
         Task<bool> AnyUserExistsWithRoleAsync(UserRole role);
+        Task<List<(string UserId, string Phone, UserRole Role)>> GetAllUsersAsync();
+
     }
 }
