@@ -47,7 +47,8 @@ namespace MiraDistribution.Application.Features.Books.CreateBooks
             await _context.SaveChangesAsync(cancellationToken);
 
             return books.Select(b => new BookDto(
-                b.Id, b.Type, b.SerialStart, b.SerialEnd, b.Status, null, null, b.CreatedAt)).ToList();
+                    b.Id, b.Type, b.SerialStart, b.SerialEnd, b.Status,
+                    b.DistributorId, b.Distributor != null ? b.Distributor.Name : null, b.DeliveryDate, b.ReceivedDate, b.Notes, b.CreatedAt)).ToList();
         }
     }
 }

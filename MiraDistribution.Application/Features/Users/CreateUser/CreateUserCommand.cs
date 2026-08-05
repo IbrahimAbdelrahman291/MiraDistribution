@@ -7,8 +7,8 @@ namespace MiraDistribution.Application.Features.Users.CreateUser
     string Phone,
     string Password,
     UserRole Role,
-    string? Name) : IRequest<CreateUserResponse>;
+    string Name) : IRequest<CreateUserResponse>;   // Name بقى مش nullable
 
-    public record CreateUserResponse(string UserId, string Phone, UserRole Role);
+    public record CreateUserResponse(string UserId, string Phone, UserRole Role, string Name);
 
 }

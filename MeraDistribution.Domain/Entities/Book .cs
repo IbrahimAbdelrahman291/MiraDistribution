@@ -1,10 +1,6 @@
 ﻿using MiraDistribution.Domain.Common;
 using MiraDistribution.Domain.Enums;
 using MiraDistribution.Domain.Exceptions;
-using MiraDistribution.Domain.Common;
-using MiraDistribution.Domain.Entities;
-using MiraDistribution.Domain.Enums;
-using MiraDistribution.Domain.Exceptions;
 
 namespace MiraDistribution.Domain.Entities
 {
@@ -16,6 +12,9 @@ namespace MiraDistribution.Domain.Entities
         public int SerialStart { get; private set; }
         public int SerialEnd { get; private set; }
         public BookStatus Status { get; set; } = BookStatus.NotAssigned;
+        public DateTime? DeliveryDate { get; private set; }  
+        public DateTime? ReceivedDate { get; private set; }    
+        public string? Notes { get; set; }
 
         public int? DistributorId { get; set; }
         public Distributor? Distributor { get; set; }
@@ -54,12 +53,20 @@ namespace MiraDistribution.Domain.Entities
         {
             DistributorId = distributorId;
             Status = BookStatus.AssignedToDistributor;
+            DeliveryDate = null;
+            ReceivedDate = null;
         }
 
         public void Unassign()
         {
             DistributorId = null;
             Status = BookStatus.NotAssigned;
+            DeliveryDate = null;
+            ReceivedDate = null;
         }
+
+        public void SetDeliveryDate(DateTime date) => DeliveryDate = date;
+        public void SetReceivedDate(DateTime date) => ReceivedDate = date;
+        public void SetNote(string? note) => Notes = note;
     }
 }

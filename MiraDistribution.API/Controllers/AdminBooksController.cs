@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MiraDistribution.Application.Features.Books.BulkDeleteBooks;
 using MiraDistribution.Application.Features.Books.DeleteBook;
 
 namespace MiraDistribution.API.Controllers
@@ -18,6 +19,12 @@ namespace MiraDistribution.API.Controllers
         {
             await _mediator.Send(new DeleteBookCommand(id));
             return NoContent();
+        }
+        [HttpPost("bulk-delete")]
+        public async Task<ActionResult<int>> BulkDelete(BulkDeleteBooksCommand command)
+        {
+            var deletedCount = await _mediator.Send(command);
+            return Ok(new { deletedCount });
         }
     }
 }

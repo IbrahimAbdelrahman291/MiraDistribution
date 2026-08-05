@@ -2,7 +2,9 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MiraDistribution.Application.Features.Users.CreateUser;
+using MiraDistribution.Application.Features.Users.DeleteUser;
 using MiraDistribution.Application.Features.Users.GetUsers;
+using MiraDistribution.Application.Features.Users.UpdateUser;
 
 namespace MiraDistribution.API.Controllers
 {
@@ -23,5 +25,19 @@ namespace MiraDistribution.API.Controllers
         [HttpGet]
         public async Task<ActionResult<List<UserDto>>> GetAll()
             => Ok(await _mediator.Send(new GetUsersQuery()));
+        [HttpDelete("{userId}")]
+        public async Task<IActionResult> Delete(string userId)
+        {
+            await _mediator.Send(new DeleteUserCommand(userId));
+            return NoContent();
+        }
+
+        [HttpPut("{userId}")]
+        public async Task<IActionResult> Update(string userId, UpdateUserRequest request)
+        {
+            await _mediator.Send(new UpdateUserCommand(userId, request.Phone, request.Password, request.Name));
+            return NoContent();
+        }
     }
+    public record UpdateUserRequest(string? Phone, string? Password, string? Name);
 }

@@ -20,8 +20,7 @@ namespace MiraDistribution.Application.Features.Users.CreateUser
                 .WithMessage("تقدر بس تنشئ حساب محاسب أو موزع من هنا.");
 
             RuleFor(x => x.Name)
-                .NotEmpty().WithMessage("اسم الموزع مطلوب.")
-                .When(x => x.Role == UserRole.Distributor);
+                .NotEmpty().WithMessage("اسم المستخدم مطلوب.");
         }
     }
 }

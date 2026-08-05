@@ -14,27 +14,24 @@ namespace MiraDistribution.Infrastructure.Identity
             _userManager = userManager;
         }
 
-        public async Task<(bool Succeeded, string? UserId, string[] Errors)> CreateUserAsync(
-            string phone, string password, UserRole role)
+        public async Task<(bool Succeeded, string? UserId, IEnumerable<string> Errors)> CreateUserAsync(
+    string phone, string password, UserRole role, string fullName)
         {
-            var existing = await _userManager.FindByNameAsync(phone);
-            if (existing is not null)
-                return (false, null, new[] { "رقم التليفون ده مسجل بالفعل." });
-
             var user = new ApplicationUser
             {
                 UserName = phone,
-                PhoneNumber = phone
+                PhoneNumber = phone,
+                FullName = fullName
             };
 
             var result = await _userManager.CreateAsync(user, password);
             if (!result.Succeeded)
-                return (false, null, result.Errors.Select(e => e.Description).ToArray());
+                return (false, null, result.Errors.Select(e => e.Description));
 
             await _userManager.AddToRoleAsync(user, role.ToString());
-
             return (true, user.Id, Array.Empty<string>());
         }
+
 
         public async Task<string?> GetUserIdByPhoneAsync(string phone)
         {
@@ -67,10 +64,10 @@ namespace MiraDistribution.Infrastructure.Identity
             var usersInRole = await _userManager.GetUsersInRoleAsync(role.ToString());
             return usersInRole.Count > 0;
         }
-        public async Task<List<(string UserId, string Phone, UserRole Role)>> GetAllUsersAsync()
+        public async Task<List<(string UserId, string Phone, string FullName, UserRole Role)>> GetAllUsersAsync()
         {
-            var result = new List<(string, string, UserRole)>();
-            var users = _userManager.Users.ToList(); // جدول المستخدمين مش كبير عادةً، تحميله كامل مقبول هنا
+            var result = new List<(string, string, string, UserRole)>();
+            var users = _userManager.Users.ToList();
 
             foreach (var user in users)
             {
@@ -78,12 +75,58 @@ namespace MiraDistribution.Infrastructure.Identity
                 var roleName = roles.FirstOrDefault();
 
                 if (roleName is not null && Enum.TryParse<UserRole>(roleName, out var role))
-                {
-                    result.Add((user.Id, user.PhoneNumber ?? user.UserName!, role));
-                }
+                    result.Add((user.Id, user.PhoneNumber ?? user.UserName!, user.FullName, role));
             }
 
             return result;
+        }
+        public async Task<UserRole?> GetUserRoleByIdAsync(string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user is null) return null;
+
+            var roles = await _userManager.GetRolesAsync(user);
+            var roleName = roles.FirstOrDefault();
+            return roleName is not null && Enum.TryParse<UserRole>(roleName, out var role) ? role : null;
+        }
+
+        public async Task<(bool Succeeded, IEnumerable<string> Errors)> UpdatePhoneAsync(string userId, string newPhone)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user is null) return (false, new[] { "المستخدم غير موجود." });
+
+            user.PhoneNumber = newPhone;
+            user.UserName = newPhone; // بما إن اليوزرنيم = رقم التليفون
+            var result = await _userManager.UpdateAsync(user);
+
+            return (result.Succeeded, result.Errors.Select(e => e.Description));
+        }
+
+        public async Task<(bool Succeeded, IEnumerable<string> Errors)> ResetPasswordAsync(string userId, string newPassword)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user is null) return (false, new[] { "المستخدم غير موجود." });
+
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var result = await _userManager.ResetPasswordAsync(user, token, newPassword);
+
+            return (result.Succeeded, result.Errors.Select(e => e.Description));
+        }
+
+        public async Task DeleteUserAsync(string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user is not null)
+                await _userManager.DeleteAsync(user);
+        }
+        public async Task<(bool Succeeded, IEnumerable<string> Errors)> UpdateNameAsync(string userId, string fullName)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user is null) return (false, new[] { "المستخدم غير موجود." });
+
+            user.FullName = fullName;
+            var result = await _userManager.UpdateAsync(user);
+            return (result.Succeeded, result.Errors.Select(e => e.Description));
         }
     }
 }

@@ -11,5 +11,8 @@ namespace MiraDistribution.Application.Common.Models
     BookStatus Status,
     int? DistributorId,
     string? DistributorName,
+    DateTime? DeliveryDate,
+    DateTime? ReceivedDate,
+    string? Notes,
     DateTime CreatedAt);
 }

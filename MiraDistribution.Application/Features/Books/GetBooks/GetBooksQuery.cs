@@ -33,10 +33,10 @@ namespace MiraDistribution.Application.Features.Books.GetBooks
                 query = query.Where(b => b.DistributorId == request.DistributorId);
 
             var dtoQuery = query
-                .OrderByDescending(b => b.Id)
+                .OrderBy(b => b.Id)
                 .Select(b => new BookDto(
                     b.Id, b.Type, b.SerialStart, b.SerialEnd, b.Status,
-                    b.DistributorId, b.Distributor != null ? b.Distributor.Name : null, b.CreatedAt));
+                    b.DistributorId, b.Distributor != null ? b.Distributor.Name : null,b.DeliveryDate,b.ReceivedDate,b.Notes, b.CreatedAt));
 
             return await PaginatedList<BookDto>.CreateAsync(
                 dtoQuery, request.PageNumber, request.PageSize, cancellationToken);

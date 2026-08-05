@@ -7,7 +7,7 @@ namespace MiraDistribution.Application.Features.Users.GetUsers
 {
     public record GetUsersQuery : IRequest<List<UserDto>>;
 
-    public record UserDto(string UserId, string Phone, UserRole Role, string? DistributorName);
+    public record UserDto(string UserId, string Phone, string Name, UserRole Role);
 
     public class GetUsersQueryHandler : IRequestHandler<GetUsersQuery, List<UserDto>>
     {
@@ -23,18 +23,7 @@ namespace MiraDistribution.Application.Features.Users.GetUsers
         public async Task<List<UserDto>> Handle(GetUsersQuery request, CancellationToken cancellationToken)
         {
             var users = await _identityService.GetAllUsersAsync();
-
-            var distributorNames = await _context.Distributors
-                .AsNoTracking()
-                .Select(d => new { d.UserId, d.Name })
-                .ToDictionaryAsync(d => d.UserId, d => d.Name, cancellationToken);
-
-            return users.Select(u => new UserDto(
-                u.UserId,
-                u.Phone,
-                u.Role,
-                u.Role == UserRole.Distributor && distributorNames.TryGetValue(u.UserId, out var name) ? name : null
-            )).ToList();
+            return users.Select(u => new UserDto(u.UserId, u.Phone, u.FullName, u.Role)).ToList();
         }
     }
 }

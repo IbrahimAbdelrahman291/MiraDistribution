@@ -9,7 +9,7 @@ namespace MiraDistribution.API.Controllers
 {
     [ApiController]
     [Route("api/v1/distributors")]
-    [Authorize(Roles = "Accountant")]
+    [Authorize(Roles = "Accountant,Admin")]
     public class DistributorsController : ControllerBase
     {
         private readonly IMediator _mediator;

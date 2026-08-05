@@ -21,7 +21,7 @@ namespace MiraDistribution.Application.Features.Users.CreateUser
         public async Task<CreateUserResponse> Handle(CreateUserCommand request, CancellationToken cancellationToken)
         {
             var (succeeded, userId, errors) = await _identityService.CreateUserAsync(
-                request.Phone, request.Password, request.Role);
+                request.Phone, request.Password, request.Role, request.Name);
 
             if (!succeeded)
             {
@@ -33,7 +33,7 @@ namespace MiraDistribution.Application.Features.Users.CreateUser
             {
                 var distributor = new Distributor
                 {
-                    Name = request.Name!,
+                    Name = request.Name,
                     Phone = request.Phone,
                     UserId = userId!
                 };
@@ -42,7 +42,7 @@ namespace MiraDistribution.Application.Features.Users.CreateUser
                 await _context.SaveChangesAsync(cancellationToken);
             }
 
-            return new CreateUserResponse(userId!, request.Phone, request.Role);
+            return new CreateUserResponse(userId!, request.Phone, request.Role, request.Name);
         }
     }
 }

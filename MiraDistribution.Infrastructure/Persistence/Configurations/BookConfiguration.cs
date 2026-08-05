@@ -15,6 +15,7 @@ namespace MiraDistribution.Infrastructure.Persistence.Configurations
             builder.Property(b => b.CreatedByUserId).IsRequired();
 
             builder.HasIndex(b => new { b.SerialStart, b.SerialEnd });
+            builder.Property(b => b.Notes).HasMaxLength(500);
 
             builder.HasOne(b => b.Distributor)
                 .WithMany(d => d.Books)

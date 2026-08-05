@@ -25,8 +25,8 @@ namespace MiraDistribution.Application.Features.Books.SearchBookByReceipt
                 ?? throw new NotFoundException("إيصال", request.ReceiptNumber);
 
             return new BookDto(
-                book.Id, book.Type, book.SerialStart, book.SerialEnd, book.Status,
-                book.DistributorId, book.Distributor?.Name, book.CreatedAt);
+                    book.Id, book.Type, book.SerialStart, book.SerialEnd, book.Status,
+                    book.DistributorId, book.Distributor != null ? book.Distributor.Name : null, book.DeliveryDate, book.ReceivedDate, book.Notes, book.CreatedAt);
         }
     }
 }
