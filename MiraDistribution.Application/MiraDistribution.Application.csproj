@@ -5,7 +5,9 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
-
+	<PropertyGroup>
+		<NuGetAudit>false</NuGetAudit>
+	</PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\MeraDistribution.Domain\MiraDistribution.Domain.csproj" />
   </ItemGroup>
